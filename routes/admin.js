@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const tcb = require('@cloudbase/node-sdk');
 
-const app = tcb.init();
+const app = tcb.init({
+  env: tcb.SYMBOL_CURRENT_ENV
+});
 const db = app.database();
 const _ = db.command;
 
@@ -42,6 +44,16 @@ router.post('/tasks/:id/status', async (req, res) => {
     console.error(err);
     res.status(500).send('更新失败');
   }
+});
+
+// 健康检查与环境探测
+router.get('/health', async (req, res) => {
+  res.json({
+    status: 'ok',
+    env: process.env.TCB_ENV || 'unknown',
+    service: process.env.TCB_SERVICE || 'unknown',
+    hasKeys: !!(process.env.TENCENTCLOUD_SECRETID && process.env.TENCENTCLOUD_SECRETKEY)
+  });
 });
 
 // 获取统计信息
