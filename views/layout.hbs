@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - 快印管理系统</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Montserrat & Source Code Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F5F6FA;
+            color: #2F3640;
+        }
+        .font-mono {
+            font-family: 'Source Code Pro', monospace;
+        }
+        .industrial-border {
+            border: 2px solid #7F8C8D;
+        }
+        .status-0 { color: #E84118; } /* 待处理 */
+        .status-1 { color: #F1C40F; } /* 打印中 */
+        .status-2 { color: #44BD32; } /* 已完成 */
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#2F3640] text-white flex flex-col industrial-border border-r-0">
+        <div class="p-6 border-b border-[#7F8C8D]">
+            <h1 class="text-xl font-bold tracking-widest uppercase">KuaiYin <span class="text-[#44BD32]">Admin</span></h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="/admin/tasks" class="flex items-center space-x-3 p-3 rounded hover:bg-[#7F8C8D] transition-colors">
+                <i class="fas fa-print"></i>
+                <span>任务管理</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded hover:bg-[#7F8C8D] opacity-50 cursor-not-allowed">
+                <i class="fas fa-chart-bar"></i>
+                <span>数据统计</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded hover:bg-[#7F8C8D] opacity-50 cursor-not-allowed">
+                <i class="fas fa-cog"></i>
+                <span>系统设置</span>
+            </a>
+        </nav>
+        <div class="p-6 border-t border-[#7F8C8D] text-xs font-mono">
+            V 1.0.0 @ 2026
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col">
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8 border-b industrial-border border-t-0 border-r-0 border-l-0">
+            <h2 class="text-lg font-bold font-mono">{{title}}</h2>
+            <div class="flex items-center space-x-4">
+                <div class="bg-[#F5F6FA] px-3 py-1 rounded-full text-xs font-mono">
+                    <span class="inline-block w-2 h-2 rounded-full bg-[#44BD32] animate-pulse mr-2"></span>
+                    SYSTEM ONLINE
+                </div>
+            </div>
+        </header>
+        
+        <section class="p-8 overflow-y-auto">
+            {{{body}}}
+        </section>
+    </main>
+
+    <!-- Notification Sound -->
+    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script>
+        // Simple real-time check (polling for stats)
+        async function checkStats() {
+            try {
+                const res = await fetch('/admin/stats');
+                const data = await res.json();
+                if (data.pending > 0) {
+                    // Update UI or play sound if needed
+                    console.log('Pending tasks:', data.pending);
+                }
+            } catch (err) {}
+        }
+        setInterval(checkStats, 30000);
+    </script>
+</body>
+</html>

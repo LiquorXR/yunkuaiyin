@@ -1,0 +1,19 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.logo{
+  width: 100px;
+}
+.doc{
+  display: flex;
+  gap: 16px;
+}
+a {
+  color: #2e6cf6;
+}

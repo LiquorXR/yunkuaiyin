@@ -1,0 +1,72 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{#if tasks.length}}
+        {{#each tasks}}
+        <div class="bg-white industrial-border p-6 relative group hover:translate-y-[-4px] transition-transform">
+            <!-- Order ID Badge -->
+            <div class="absolute -top-3 -right-3 bg-[#2F3640] text-white text-[10px] px-2 py-1 font-mono transform rotate-3">
+                TASK NO: {{this.taskNo}}
+            </div>
+
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="font-bold text-lg font-mono mb-1">
+                        {{#if this.userId}}
+                        USER: {{this.userId}}
+                        {{else}}
+                        ANONYMOUS
+                        {{/if}}
+                    </h3>
+                    <p class="text-xs text-[#7F8C8D] font-mono">{{this.createTime}}</p>
+                </div>
+                <span class="status-{{this.status}} font-bold text-xs">
+                    {{#if (eq this.status 0)}}<i class="fas fa-clock mr-1"></i>待处理{{/if}}
+                    {{#if (eq this.status 1)}}<i class="fas fa-spinner fa-spin mr-1"></i>打印中{{/if}}
+                    {{#if (eq this.status 2)}}<i class="fas fa-check-circle mr-1"></i>已完成{{/if}}
+                </span>
+            </div>
+
+            <div class="mb-4 bg-[#F5F6FA] p-3 rounded text-sm italic">
+                "{{#if this.remark}}{{this.remark}}{{else}}无备注{{/if}}"
+            </div>
+
+            <div class="space-y-2 mb-6">
+                <h4 class="text-[10px] font-bold text-[#7F8C8D] uppercase tracking-wider">Attached Files</h4>
+                {{#each this.files}}
+                <div class="flex items-center justify-between text-xs p-2 bg-white border border-[#F5F6FA] hover:border-[#7F8C8D]">
+                    <span class="truncate w-32 font-mono"><i class="far fa-file-alt mr-2"></i>{{this.fileName}}</span>
+                    <a href="{{this.fileUrl}}" target="_blank" class="text-[#44BD32] hover:underline">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+                {{/each}}
+            </div>
+
+            <div class="flex space-x-2">
+                <form action="/admin/tasks/{{this._id}}/status" method="POST" class="flex-1">
+                    <input type="hidden" name="status" value="1">
+                    <button type="submit" class="w-full bg-[#F1C40F] text-white py-2 text-xs font-bold uppercase tracking-tighter hover:bg-[#D4AC0D]">
+                        Start Print
+                    </button>
+                </form>
+                <form action="/admin/tasks/{{this._id}}/status" method="POST" class="flex-1">
+                    <input type="hidden" name="status" value="2">
+                    <button type="submit" class="w-full bg-[#44BD32] text-white py-2 text-xs font-bold uppercase tracking-tighter hover:bg-[#27AE60]">
+                        Complete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {{/each}}
+    {{else}}
+        <div class="col-span-full py-20 text-center">
+            <i class="fas fa-inbox text-4xl text-[#7F8C8D] mb-4"></i>
+            <p class="text-[#7F8C8D] font-mono uppercase tracking-widest">No Active Tasks Found</p>
+        </div>
+    {{/if}}
+</div>
+
+<script>
+    // Custom Handlebars helper-like logic for status (hbs doesn't have eq by default, so we use a simple comparison)
+    // Actually, I should have registered a helper in app.js. 
+    // For simplicity, I'll update the routes/admin.js to process the labels.
+</script>
