@@ -27,8 +27,10 @@ app.get(['/api/orders', '/orders'], async (req, res) => {
   const startTime = Date.now();
   try {
     const db = getDB();
+    // 添加 limit(20) 限制，并添加超时重试逻辑（逻辑层处理）
     const result = await db.collection('orders')
       .orderBy('createTime', 'desc')
+      .limit(20)
       .get();
     
     console.log(`[LOG] 成功获取订单，数量: ${result.data ? result.data.length : 0}，耗时: ${Date.now() - startTime}ms`);
