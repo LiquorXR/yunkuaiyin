@@ -23,7 +23,8 @@
 <body>
     <div class="header">
         <h1>打印订单管理</h1>
-        <button class="btn btn-primary" onclick="fetchOrders()">刷新订单</button>
+        <button class="btn btn-primary" onclick="fetchOrders()">手动刷新</button>
+        <div id="autoRefreshStatus" style="font-size: 12px; color: #999;"></div>
     </div>
 
     <div class="card">
@@ -32,7 +33,7 @@
                 <tr>
                     <th>时间</th>
                     <th>取件码</th>
-                    <th>配置</th>
+                    <th>配置/备注</th>
                     <th>文件清单</th>
                     <th>状态</th>
                     <th>操作</th>
@@ -45,11 +46,23 @@
     </div>
 
     <script>
+        let autoRefreshTimer = null;
+
         async function fetchOrders() {
-            const res = await fetch('/api/orders');
-            const result = await res.json();
-            if (result.code === 0) {
-                renderOrders(result.data);
+            const statusEl = document.getElementById('autoRefreshStatus');
+            statusEl.innerText = '正在刷新...';
+            try {
+                const res = await fetch('/api/orders');
+                const result = await res.json();
+                if (result.code === 0) {
+                    renderOrders(result.data);
+                    statusEl.innerText = '最后刷新: ' + new Date().toLocaleTimeString();
+                } else {
+                    statusEl.innerText = '刷新失败: ' + (result.msg || '未知错误');
+                }
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = '网络错误，请稍后再试';
             }
         }
 
@@ -59,7 +72,10 @@
                 <tr>
                     <td>${new Date(order.createTime).toLocaleString()}</td>
                     <td style="font-weight:bold;color:#07C160">${order.pickupCode}</td>
-                    <td>${order.color} | ${order.sides} | ${order.copies}份</td>
+                    <td>
+                        <div>${order.color} | ${order.sides} | ${order.copies}份</div>
+                        ${order.remark ? `<div style="color: #ff4d4f; font-size: 12px; margin-top: 4px;">备注：${order.remark}</div>` : ''}
+                    </td>
                     <td>
                         ${order.files.map(f => `<a href="javascript:void(0)" onclick="downloadFile('${f.fileID}')" class="file-link">${f.name}</a>`).join('')}
                     </td>
@@ -104,8 +120,15 @@
             }
         }
 
+        // 自动刷新逻辑 (每30秒)
+        function startAutoRefresh() {
+            if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+            autoRefreshTimer = setInterval(fetchOrders, 30000);
+        }
+
         // 初始化加载
         fetchOrders();
+        startAutoRefresh();
     </script>
 </body>
 </html>
