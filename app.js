@@ -8,13 +8,17 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 初始化云 SDK (云托管内免鉴权)
+// 建议在云托管中显式指定 env 以解决 501001 超时问题
+const ENV_ID = 'cloud1-6g1kbwm11a29be63';
+
 cloud.init({
-  env: cloud.DYNAMIC_TYPE_CH_ENV
+  env: ENV_ID
 });
 
 // 数据库对象在请求时再获取，确保初始化完成
-// 使用动态环境 ID 以适应云托管免鉴权环境
-const getDB = () => cloud.database();
+const getDB = () => cloud.database({
+  env: ENV_ID
+});
 
 // 获取订单列表
 // 兼容不同路径的获取订单请求
