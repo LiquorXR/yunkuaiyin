@@ -1,0 +1,14 @@
+{
+  "name": "kuaiyin-admin",
+  "version": "1.0.0",
+  "description": "快印文件助手管理后台",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "wx-server-sdk": "~2.6.3",
+    "body-parser": "^1.20.2"
+  }
+}
