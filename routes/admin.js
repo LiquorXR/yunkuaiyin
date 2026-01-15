@@ -81,6 +81,10 @@ router.get('/', async (req, res) => {
   }
 
   try {
+    const { data: tasks } = await db.collection('orders')
+      .orderBy('createTime', 'desc')
+      .get();
+
     // 为每个文件的 fileID 获取临时下载链接
     for (const task of tasks) {
       if (task.files && task.files.length > 0) {
