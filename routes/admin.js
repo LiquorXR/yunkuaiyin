@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const tcb = require('@cloudbase/node-sdk');
+const JSZip = require('jszip');
+const axios = require('axios');
 
 // 优先从环境变量获取
 const ENV_ID = process.env.TCB_ENV;
+// ... (rest of tcb init)
+
 
 let app;
 try {
@@ -68,6 +72,51 @@ router.post('/tasks/:id/status', async (req, res) => {
     res.redirect('/');
   } catch (err) {
     res.status(500).send('更新失败: ' + err.message);
+  }
+});
+
+// 5. 批量下载订单文件
+router.get('/tasks/:id/download-all', async (req, res) => {
+  if (!db) return res.status(500).send('Database not initialized');
+  const { id } = req.params;
+
+  try {
+    const { data: [task] } = await db.collection('orders').doc(id).get();
+    if (!task || !task.files || task.files.length === 0) {
+      return res.status(404).send('订单不存在或没有文件');
+    }
+
+    // 获取文件临时下载链接
+    const fileList = task.files.map(f => ({
+      fileID: f.fileID,
+      maxAge: 3600
+    }));
+    const { fileList: urls } = await app.getTempFileURL({ fileList });
+
+    const zip = new JSZip();
+    
+    // 下载所有文件并加入 zip
+    const downloadPromises = urls.map(async (fileInfo, index) => {
+      const response = await axios.get(fileInfo.tempFileURL, { responseType: 'arraybuffer' });
+      const fileName = task.files[index].name;
+      zip.file(fileName, response.data);
+    });
+
+    await Promise.all(downloadPromises);
+
+    const content = await zip.generateAsync({ type: 'nodebuffer' });
+
+    // 格式化时间
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    const zipName = `${task.pickupCode}_${timeStr}.zip`;
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(zipName)}`);
+    res.send(content);
+  } catch (err) {
+    console.error('打包下载失败:', err);
+    res.status(500).send('打包下载失败: ' + err.message);
   }
 });
 

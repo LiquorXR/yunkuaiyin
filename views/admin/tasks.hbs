@@ -12,7 +12,6 @@
                     <span class="text-[10px] uppercase tracking-widest opacity-70">状态</span>
                     <span class="status-{{this.status}} font-bold text-xs uppercase">
                         {{#if (eq this.status 'pending')}}待处理{{/if}}
-                        {{#if (eq this.status 'processing')}}打印中{{/if}}
                         {{#if (eq this.status 'completed')}}已完成{{/if}}
                     </span>
                 </div>
@@ -36,21 +35,25 @@
                 <div class="border-b border-[#F5F6FA] pb-2">
                     <div class="text-[#7F8C8D] mb-1">打印规格</div>
                     <div class="flex justify-between items-end">
-                        <span class="font-bold text-[#2F3640]">{{this.color}} | {{this.sides}}</span>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-[#2F3640]">
+                                {{this.color}} | {{this.sides}}{{#if this.needsBinding}} | 需要装订{{/if}}
+                            </span>
+                        </div>
                         <span class="text-xs text-[#44BD32]">x {{this.copies}} 份</span>
                     </div>
                 </div>
 
                 <!-- Files -->
                 <div>
-                    <div class="text-[#7F8C8D] mb-2">附件列表</div>
+                    <div class="text-[#7F8C8D] mb-2">文件列表</div>
                     <div class="grid grid-cols-1 gap-2">
                         {{#each this.files}}
                         <a href="{{this.downloadURL}}" target="_blank" download="{{this.name}}" 
                            class="flex items-center justify-between p-2 bg-[#F5F6FA] border border-transparent hover:border-[#44BD32] transition-colors group"
                            title="{{this.name}}">
                             <div class="flex items-center space-x-2 truncate">
-                                <i class="fas fa-file-pdf text-[#E84118]"></i>
+                                <i class="fas {{getFileIcon this.name}}"></i>
                                 <span class="truncate text-xs text-[#2F3640]">{{this.name}}</span>
                             </div>
                             <i class="fas fa-download text-[#44BD32] opacity-0 group-hover:opacity-100 transition-opacity"></i>
@@ -72,20 +75,15 @@
             <div class="p-4 bg-[#F5F6FA]/50 border-t border-[#F5F6FA]">
                 <div class="flex gap-2">
                     {{#unless (eq this.status 'completed')}}
-                        {{#if (eq this.status 'pending')}}
-                        <form action="/tasks/{{this._id}}/status" method="POST" class="flex-1">
-                            <input type="hidden" name="status" value="processing">
-                            <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2 bg-[#F1C40F] text-white hover:bg-[#D4AC0D] transition-colors">
-                                <i class="fas fa-spinner"></i>
-                                <span class="text-xs font-bold uppercase">开始打印</span>
-                            </button>
-                        </form>
-                        {{/if}}
+                        <a href="/tasks/{{this._id}}/download-all" class="flex-1 flex items-center justify-center space-x-2 py-2 bg-[#F1C40F] text-white hover:bg-[#D4AC0D] transition-colors">
+                            <i class="fas fa-file-archive"></i>
+                            <span class="text-xs font-bold uppercase">全部下载</span>
+                        </a>
                         <form action="/tasks/{{this._id}}/status" method="POST" class="flex-1">
                             <input type="hidden" name="status" value="completed">
                             <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2 bg-[#44BD32] text-white hover:bg-[#27AE60] transition-colors">
                                 <i class="fas fa-check"></i>
-                                <span class="text-xs font-bold uppercase">完成任务</span>
+                                <span class="text-xs font-bold uppercase">完成订单</span>
                             </button>
                         </form>
                     {{else}}

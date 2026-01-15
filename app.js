@@ -30,6 +30,27 @@ hbs.registerHelper('formatDate', function (date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 });
 
+hbs.registerHelper('getFileIcon', function (filename) {
+  if (!filename) return 'fa-file';
+  const ext = filename.split('.').pop().toLowerCase();
+  const icons = {
+    'pdf': 'fa-file-pdf text-[#E84118]',
+    'doc': 'fa-file-word text-[#2B579A]',
+    'docx': 'fa-file-word text-[#2B579A]',
+    'xls': 'fa-file-excel text-[#217346]',
+    'xlsx': 'fa-file-excel text-[#217346]',
+    'ppt': 'fa-file-powerpoint text-[#D24726]',
+    'pptx': 'fa-file-powerpoint text-[#D24726]',
+    'jpg': 'fa-file-image text-[#44BD32]',
+    'jpeg': 'fa-file-image text-[#44BD32]',
+    'png': 'fa-file-image text-[#44BD32]',
+    'zip': 'fa-file-archive text-[#F1C40F]',
+    'rar': 'fa-file-archive text-[#F1C40F]',
+    'txt': 'fa-file-alt text-[#7F8C8D]'
+  };
+  return icons[ext] || 'fa-file text-[#7F8C8D]';
+});
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
