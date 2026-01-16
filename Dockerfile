@@ -1,5 +1,5 @@
-# 使用 Node.js 18.x 镜像
-FROM node:18-alpine
+# 使用 Node.js 20.x 镜像
+FROM node:20-alpine
 
 # 安装时区数据
 RUN apk add --no-cache tzdata && \
