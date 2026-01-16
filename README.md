@@ -1,56 +1,36 @@
-# cloudrun-express
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## 快速开始
+## Getting Started
 
-前往 [腾讯云托管快速开始页面](https://tcb.cloud.tencent.com/dev?envId=lowcode-9gms1m53798f7294#/platform-run),选择相应语言的模版，根据引导完成部署。
-
-## 本地调试
-
-1. clone 项目到本地，[项目地址](https://github.com/TencentCloudBase/tcbr-templates)
-   
-2. 安装依赖
-   
-```bash
-npm install
-# or
-yarn install
-```
-
-3. 运行dev命令
+First, run the development server:
 
 ```bash
-npm run start
+npm run dev
 # or
-yarn start
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-浏览器访问：[http://localhost:3000](http://localhost:3000) 进行开发调试。
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Dockerfile 最佳实践
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-请参考 [优化容器镜像](https://docs.cloudbase.net/run/develop/image-optimization)
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## 目录结构说明
+## Learn More
 
-```
-├─ cloudrun-express         
-│  ├─ Dockerfile            # docker 镜像配置
-│  ├─ README.md             # 项目说明
-│  ├─ app.js                # express 配置
-│  ├─ bin
-│  │  └─ www                # express 启动文件
-│  ├─ package-lock.json
-│  ├─ package.json
-│  ├─ public                # 静态资源
-│  │  ├─ images
-│  │  ├─ javascripts
-│  │  └─ stylesheets
-│  │     └─ style.css
-│  ├─ routes                # 路由处理程序
-│  │  ├─ index.js
-│  │  └─ users.js
-│  └─ views                 # 视图文件
-│     ├─ error.hbs
-│     ├─ index.hbs
-│     └─ layout.hbs
-```
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
