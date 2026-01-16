@@ -1,9 +1,23 @@
 import React from 'react';
-import { LayoutDashboard, ClipboardList, Settings } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SystemHealth } from './system-health';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await axios.delete('/api/auth/login');
+      router.push('/login');
+      router.refresh();
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-slate-50">
       {/* Sidebar */}
@@ -33,8 +47,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </a>
         </nav>
 
-        <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-slate-200 space-y-4">
           <SystemHealth />
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 text-red-600 rounded-lg hover:bg-red-50 transition-colors mt-2"
+          >
+            <LogOut size={20} />
+            <span>退出登录</span>
+          </button>
         </div>
       </aside>
 
